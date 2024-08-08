@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.HotelMapper">
+    <select id="selectOne" parameterType="int" resultType="HotelDTO">
+        SELECT * FROM hotel
+        INNER JOIN user
+        ON hotel.seller_id = user.id
+        WHERE hotel.id = #{id}
+    </select>
+    <select id="selectMaxPage" resultType="int">
+        SELECT COUNT(*) FROM hotel
+    </select>
+    <select id="selectList" parameterType="hashmap" resultType="HotelDTO">
+        SELECT * FROM hotel
+        INNER JOIN user
+        ON hotel.seller_id = user.id
+        ORDER BY hotel.id DESC
+        LIMIT #{startRow},#{size}
+    </select>
+    <insert id="insert" parameterType="HotelDTO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO hotel(name, content,address, seller_id, start_entry,
+        end_entry,room_number,room_member,price,short_content,empty)
+        VALUES(#{name}, #{content},#{address},
+        #{sellerId},#{startEntry},#{endEntry},#{roomNumber},#{roomMember},#{price},#{shortContent},0)
+    </insert>
+    <select id="searchHotels" resultType="HotelDTO" parameterType="map">
+        SELECT * FROM hotel
+        INNER JOIN user ON hotel.seller_id = user.id
+        WHERE
+        <choose>
+            <when test="searchType == 'name'">
+                name LIKE CONCAT('%', #{keyword}, '%')
+            </when>
+            <when test="searchType == 'address'">
+                address LIKE CONCAT('%', #{keyword}, '%')
+            </when>
+        </choose>
+        ORDER BY hotel.id ASC
+    </select>
+    <update id="update" parameterType="HotelDTO">
+        UPDATE hotel
+        SET name = #{name},
+        content = #{content},
+        address = #{address},
+        start_entry = #{startEntry},
+        end_entry = #{endEntry},
+        room_number = #{roomNumber},
+        room_member = #{roomMember},
+        price = #{price},
+        short_content = #{shortContent}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM hotel
+        WHERE id = #{id}
+    </delete>
+
+</mapper>
