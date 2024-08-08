@@ -74,6 +74,7 @@ public class HotelController {
         return resultMap;
     }
 
+    @ResponseBody
     @PostMapping("uploads")
     public Map<String, Object> uploadFiles(MultipartHttpServletRequest request) {
         Map<String, Object> resultMap = new HashMap<>();
@@ -116,6 +117,9 @@ public class HotelController {
 
     @PostMapping("write")
     public HashMap<String, Object> write(@RequestBody HotelDTO hotelDTO) {
+
+        System.out.println(hotelDTO);
+
         HashMap<String, Object> resultMap = new HashMap<>();
         try {
             HOTEL_SERVICE.insert(hotelDTO);
@@ -125,6 +129,7 @@ public class HotelController {
             e.printStackTrace();
             resultMap.put("result", "fail");
         }
+        System.out.println(hotelDTO);
         return resultMap;
     }
 

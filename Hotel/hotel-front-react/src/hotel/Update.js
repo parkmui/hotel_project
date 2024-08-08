@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Container, FormControl, Table } from "react-bootstrap";
+import { Button, Container, FormControl, Table, Image } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
@@ -11,14 +11,15 @@ let Update = () => {
         name: '',
         content: '',
         address: '',
-        start_entry: '',
-        end_entry: '',
-        room_number: '',
-        room_member: '',
+        startEntry: '',
+        endEntry: '',
+        roomNumber: '',
+        roomMember: '',
         price: '',
-        short_content: ''
+        shortContent: ''
     });
     let [files, setFiles] = useState([]);
+    let [imageUrls, setImageUrls] = useState([]);
 
     let navigate = useNavigate();
 
@@ -31,7 +32,11 @@ let Update = () => {
     };
 
     let onFileChange = (e) => {
-        setFiles(e.target.files);
+        let selectedFiles = Array.from(e.target.files);
+        setFiles(selectedFiles);
+
+        const urls = selectedFiles.map(file => URL.createObjectURL(file));
+        setImageUrls(urls);
     };
 
     let uploadFiles = async (files) => {
@@ -44,7 +49,8 @@ let Update = () => {
             let resp = await axios.post('http://localhost:8080/hotel/uploads', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
-                }
+                },
+                withCredentials: true
             });
 
             return resp.data.urls;
@@ -87,6 +93,7 @@ let Update = () => {
 
             if (resp.status === 200) {
                 setInputs(resp.data);
+                setImageUrls(resp.data.imagePaths || []);
             }
         };
 
@@ -117,12 +124,12 @@ let Update = () => {
                     <tr>
                         <td>설명</td>
                         <td>
-                                <textarea
-                                    name={'content'}
-                                    className={'form-control'}
-                                    value={inputs.content}
-                                    onChange={onChange}
-                                />
+                            <textarea
+                                name={'content'}
+                                className={'form-control'}
+                                value={inputs.content}
+                                onChange={onChange}
+                            />
                         </td>
                     </tr>
                     <tr>
@@ -141,8 +148,8 @@ let Update = () => {
                         <td>
                             <FormControl
                                 type={'date'}
-                                name={'start_entry'}
-                                value={inputs.start_entry}
+                                name={'startEntry'}
+                                value={inputs.startEntry}
                                 onChange={onChange}
                             />
                         </td>
@@ -152,8 +159,8 @@ let Update = () => {
                         <td>
                             <FormControl
                                 type={'date'}
-                                name={'end_entry'}
-                                value={inputs.end_entry}
+                                name={'endEntry'}
+                                value={inputs.endEntry}
                                 onChange={onChange}
                             />
                         </td>
@@ -163,8 +170,8 @@ let Update = () => {
                         <td>
                             <FormControl
                                 type={'number'}
-                                name={'room_number'}
-                                value={inputs.room_number}
+                                name={'roomNumber'}
+                                value={inputs.roomNumber}
                                 onChange={onChange}
                             />
                         </td>
@@ -174,8 +181,8 @@ let Update = () => {
                         <td>
                             <FormControl
                                 type={'number'}
-                                name={'room_member'}
-                                value={inputs.room_member}
+                                name={'roomMember'}
+                                value={inputs.roomMember}
                                 onChange={onChange}
                             />
                         </td>
@@ -196,8 +203,8 @@ let Update = () => {
                         <td>
                             <FormControl
                                 type={'text'}
-                                name={'short_content'}
-                                value={inputs.short_content}
+                                name={'shortContent'}
+                                value={inputs.shortContent}
                                 onChange={onChange}
                             />
                         </td>
@@ -213,6 +220,22 @@ let Update = () => {
                             />
                         </td>
                     </tr>
+                    {imageUrls.length > 0 && (
+                        <tr>
+                            <td colSpan={2}>
+                                <div className="d-flex flex-wrap">
+                                    {imageUrls.map((url, index) => (
+                                        <Image
+                                            key={index}
+                                            src={url}
+                                            thumbnail
+                                            style={{ marginRight: '10px', marginBottom: '10px' }}
+                                        />
+                                    ))}
+                                </div>
+                            </td>
+                        </tr>
+                    )}
                     <tr>
                         <td colSpan={2} className={'text-center'}>
                             <Button type={'submit'}>

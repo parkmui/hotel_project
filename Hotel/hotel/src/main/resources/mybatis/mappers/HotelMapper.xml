@@ -6,7 +6,7 @@
     <select id="selectOne" parameterType="int" resultType="HotelDTO">
         SELECT * FROM hotel
         INNER JOIN user
-        ON hotel.seller_id = user.id
+        ON hotel.sellerId = user.id
         WHERE hotel.id = #{id}
     </select>
     <select id="selectMaxPage" resultType="int">
@@ -15,19 +15,19 @@
     <select id="selectList" parameterType="hashmap" resultType="HotelDTO">
         SELECT * FROM hotel
         INNER JOIN user
-        ON hotel.seller_id = user.id
+        ON hotel.sellerId = user.id
         ORDER BY hotel.id DESC
         LIMIT #{startRow},#{size}
     </select>
     <insert id="insert" parameterType="HotelDTO" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO hotel(name, content,address, seller_id, start_entry,
-        end_entry,room_number,room_member,price,short_content,empty)
+        INSERT INTO hotel(name, content,address, sellerId, startEntry,
+        endEntry,roomNumber,roomMember,price,shortContent,booked)
         VALUES(#{name}, #{content},#{address},
         #{sellerId},#{startEntry},#{endEntry},#{roomNumber},#{roomMember},#{price},#{shortContent},0)
     </insert>
     <select id="searchHotels" resultType="HotelDTO" parameterType="map">
         SELECT * FROM hotel
-        INNER JOIN user ON hotel.seller_id = user.id
+        INNER JOIN user ON hotel.sellerId = user.id
         WHERE
         <choose>
             <when test="searchType == 'name'">
@@ -44,12 +44,12 @@
         SET name = #{name},
         content = #{content},
         address = #{address},
-        start_entry = #{startEntry},
-        end_entry = #{endEntry},
-        room_number = #{roomNumber},
-        room_member = #{roomMember},
+        startEntry = #{startEntry},
+        endEntry = #{endEntry},
+        roomNumber = #{roomNumber},
+        roomMember = #{roomMember},
         price = #{price},
-        short_content = #{shortContent}
+        shortContent = #{shortContent}
         WHERE id = #{id}
     </update>
 

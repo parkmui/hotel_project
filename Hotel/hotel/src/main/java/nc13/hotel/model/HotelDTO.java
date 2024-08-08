@@ -12,7 +12,7 @@ public class HotelDTO {
     public Date startEntry;
     public Date endEntry;
     public int roomNumber;
-    public boolean empty;
+    public boolean booked;
     public double price;
     public int sellerId;
     public String content;

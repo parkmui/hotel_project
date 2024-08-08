@@ -38,6 +38,10 @@ let ShowList = () => {
 
     let isSeller = userInfo.role === 'role_seller'
 
+    let moveToWrite = () => {
+        navigate('/hotel/write', {state: {userInfo: userInfo}})
+    }
+
     return (
         <Container className={"mt-3"}>
             <div className="row mt-3 mb-3">
@@ -55,7 +59,7 @@ let ShowList = () => {
                 <div className="row justify-content-start">
                     {isSeller && (
                         <div className="col-3">
-                            <Button className="btn btn-outline-success" href="/hotel/write">글 작성하기</Button>
+                            <Button className="btn btn-outline-success" onClick={moveToWrite}>글 작성하기</Button>
                         </div>
                     )}
                 </div>
